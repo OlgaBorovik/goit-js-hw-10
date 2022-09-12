@@ -3,15 +3,18 @@ function fetchCountries(name) {
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Status: ${response.status}`);
-                }
+            }
             return response.json();
         })
         // .then(data => {
         //     console.log(data)
         // })
-        .catch(console.error())
+        .catch(error => {
+            return error
+        })
 }
 
-// fetchCountries('usa')
+
+
 
 export {fetchCountries}

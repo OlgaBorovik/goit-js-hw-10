@@ -1,7 +1,7 @@
 import './css/styles.css';
 import { fetchCountries } from './fetchCountries';
 import debounce from 'lodash.debounce';
-import Notiflix from 'notiflix'
+import { Notify } from 'notiflix/build/notiflix-notify-aio'
 
 const inputRef = document.querySelector('input#search-box')
 const countryList = document.querySelector('.country-list')
@@ -15,7 +15,7 @@ inputRef.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY))
 function onInput() {
     const inputName = inputRef.value.trim()
     if (inputName === '') {
-       return (countryList.innerHTML = ''), (countryInfo.innerHTML = '')
+    return (countryList.innerHTML = ''), (countryInfo.innerHTML = '')
     }
 
     console.log(inputName)
@@ -26,26 +26,18 @@ function onInput() {
         })
         .then(countries => {
             if (countries.length === 1) {
-                return renderCountryCard(countries)         
-            } else if (countries.length >= 2 || countries.length <= 10) {
-                return renderCountryList(countries)
-            } else {
-            return Notiflix.Notify.info('Too many matches found. Please enter a more specific name.')
+                return renderCountryCard(countries)
+            } else if (countries.length >= 2 && countries.length <= 10) {
+               return renderCountryList(countries)
+            } else if (countries.length > 10) {
+            Notify.info('Too many matches found. Please enter a more specific name.')
+            } else if (response.status === 404) {
+                return error
             }
+        })    
+        .catch(error => Notify.failure('Oops, there is no country with that name'))
+}
         
-        })
-    
-
-   
-            
-            
-    
-    
-        }
-        
-        
-    
-    
 
 function renderCountryCard(countries) {
     const markupCountryCard = countries.map((country) =>
