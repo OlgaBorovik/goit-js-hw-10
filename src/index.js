@@ -14,10 +14,9 @@ inputRef.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY))
 
 function onInput() {
     const inputName = inputRef.value.trim()
-    if (inputName === '') {
-    return (countryList.innerHTML = ''), (countryInfo.innerHTML = '')
-    }
-
+    countryList.innerHTML = '';
+    countryInfo.innerHTML = '';
+    
     console.log(inputName)
     fetchCountries(inputName)
         .then(countries => {
@@ -28,7 +27,7 @@ function onInput() {
             if (countries.length === 1) {
                 return renderCountryCard(countries)
             } else if (countries.length >= 2 && countries.length <= 10) {
-               return renderCountryList(countries)
+                return renderCountryList(countries)
             } else if (countries.length > 10) {
             Notify.info('Too many matches found. Please enter a more specific name.')
             } else if (response.status === 404) {
@@ -41,28 +40,30 @@ function onInput() {
 
 function renderCountryCard(countries) {
     const markupCountryCard = countries.map((country) =>
-        `<div>
-        <h1>${country.name.official}</h1>
-        <img src = "${country.flags.svg}" alt="Flag" width = 200></img>
-        <p>Capital: ${country.capital}</p>
-        <p>Population: ${country.population}</p>
-        <p>languages: ${Object.values(country.languages)}</p>
-        </div>`)
+        `<h1 class="country-info-title">${country.name.official}</h1>
+        <img src = "${country.flags.svg}" alt="Flag" width = 150></img>
+        <p class="country-info-paragraph">Capital: <span class="country-info-text">${country.capital}</span></p>
+        <p class="country-info-paragraph">Population: <span class="country-info-text">${country.population}</span></p>
+        <p class="country-info-paragraph">languages: <span class="country-info-text">${Object.values(country.languages)}</span></p>`)
     .join("")
     countryInfo.insertAdjacentHTML('beforeend', markupCountryCard)
 }
 
 function renderCountryList(countries) {
     const markupCountryList = countries.map((country) =>
-        `<li>
-        <img src = "${country.flags.svg}" alt="Flag" width = 100></img>
-        <h1>${country.name.official}</h1>
-        </li>
-        `
+        `<li class="country-item">
+        <img class="country-item-img" src = "${country.flags.svg}" alt="Flag" width = 100></img>
+        <h1 class="country-item-title">${country.name.official}</h1>
+        </li>`
     )
-        .join()
+        .join("")
     countryList.insertAdjacentHTML('beforeend', markupCountryList)
 }
 
 
+Notify.init({
+width: '560px',
+position: 'right-top',
+fontSize: '20px',
+})
 
